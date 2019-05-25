@@ -98,6 +98,19 @@ public enum CAPSPageMenuOption {
 
 open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
+    //MARK: Delegate
+    
+    public var scrollViewDidScrollHandler: ((UIScrollView)->())?
+    public var scrollViewWillBeginDraggingHandler: ((UIScrollView)->())?
+    public var scrollViewWillEndDraggingHandler: ((UIScrollView,CGPoint,UnsafeMutablePointer<CGPoint>)->())?
+    public var scrollViewDidEndDraggingHandler: ((UIScrollView,Bool)->())?
+    public var scrollViewWillBeginDeceleratingHandler: ((UIScrollView)->())?
+    public var scrollViewDidEndDeceleratingHandler: ((UIScrollView)->())?
+    public var scrollViewDidEndScrollingAnimationHandler: ((UIScrollView)->())?
+    public var scrollViewDidScrollToTopHandler: ((UIScrollView)->())?
+    
+    
+    
     // MARK: - Properties
     
     let menuScrollView = UIScrollView()
@@ -772,6 +785,11 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
             // Move selection indicator view when swiping
             moveSelectionIndicator(currentPageIndex)
         }
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewDidScrollHandler?(scrollView)
+        }
     }
     
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -793,6 +811,56 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
             
             // Empty out pages in dictionary
             pagesAddedDictionary.removeAll(keepingCapacity: false)
+            
+            scrollViewDidEndDeceleratingHandler?(scrollView)
+        }
+    }
+    
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewWillBeginDraggingHandler?(scrollView)
+        }
+    }
+    
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewWillEndDraggingHandler?(scrollView,velocity,targetContentOffset)
+        }
+    }
+    
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewDidEndDraggingHandler?(scrollView,decelerate)
+        }
+    }
+    
+    public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewWillBeginDeceleratingHandler?(scrollView)
+        }
+    }
+    
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewDidEndScrollingAnimationHandler?(scrollView)
+        }
+    }
+    
+    public func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        
+        if scrollView.isEqual(controllerScrollView) {
+            
+            scrollViewDidScrollToTopHandler?(scrollView)
         }
     }
     
